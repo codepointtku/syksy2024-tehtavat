@@ -46,7 +46,8 @@ Web-palveluiden käyttöliittymän interaktiivisuuden toteuttamiseen käytetää
 
 ### Tehtävä 1: Flex-asettelu 
 
-Otetaan käyttöön HTML:n rakenteelliset tagit kuten header, footer, main ja aside. Pohjana on aiemmin toteutettu leffa/kirja/peli-sivusto, ja toteutetaan tässä tehtävässä asettelu **flexboxilla**, ks. viivakuva 
+Otetaan käyttöön HTML:n rakenteelliset tagit kuten header, footer, main ja aside. Pohjana on aiemmin toteutettu leffa/kirja/peli-sivusto, ja toteutetaan tässä tehtävässä asettelu **flexboxilla**, ks. viivakuva
+
 ![Viivakuva](kuvat/asettelu.png)
 
 Tässä siis Main-osiossa ei ole omaa tekstisisältöä ollenkaan, vaan se on pelkästään Article- ja Aside 2-osioiden wrapperi. Yritä toteuttaa asettelu niin, että Header, Footer ja Aside 1 pysyvät aina paikallaan, mutta Main-alue rullaa silloin, kun sen sisältö ei mahdu siihen.
@@ -61,15 +62,15 @@ Lisätään olemassaolevaan sivustoon uusi sivu, jolla on lomake, johon voidaan 
 
 Julkaisumaa on pudotusvalikko, genre radiopainikkeita, synopsis textarea, arvostelu numerokenttä, julkaisupäivä päivämääräkenttä ja katsottu-tieto valintaruutu (checkbox). Muut kentät ovat tekstikenttiä.
 
-Kun käyttäjä lomakkeen OK-painiketta, sivulla oleva JS poimii arvot lomakkeen kentistä, ja luo niiden pohjalta elokuvasta infokortin, joka näyttää suunnilleen tällaiselta:
+Kun käyttäjä lomakkeen OK-painiketta, sivulla oleva JS poimii arvot lomakkeen kentistä, ja luo niiden pohjalta sivulle lomakkeen viereen elokuvasta infokortin, joka näyttää suunnilleen tällaiselta:
 
 ![Leffakortti](kuvat/leffa.png)
 
 Tietoja ei tarvitse tallettaa minnekään pysyvästi, tässä vain harjoitellaan HTML:n ja JS:n yhteispeliä.
 
 #### Resursseja
-https://css-tricks.com/snippets/css/a-guide-to-flexbox/
-https://css-tricks.com/snippets/css/complete-guide-grid/
+- https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+- https://css-tricks.com/snippets/css/complete-guide-grid/
 
 Flexbox: 
 - https://www.youtube.com/watch?v=K74l26pE4YA 
@@ -85,9 +86,13 @@ Uusia HTML-toiminnallisuuksia:
 
 ## Keskiviikko 
 
-Siirrytään tietokantojen perusteisiin. Asennetaan koneelle [XAMPP](https://www.apachefriends.org/  ), joka on ohjelmistopaketti, joka sisältää Apache-verkkopalvelimen, MySQL (tai MariaDB)-tietokannan ja PHP-tulkin.  
+Siirrytään tietokantojen perusteisiin. Asennetaan koneelle [XAMPP](https://www.apachefriends.org/). XAMPP on ohjelmistopaketti, joka sisältää Apache-verkkopalvelimen, MySQL (tai MariaDB)-tietokannan ja PHP-tulkin.  
 
-Asentamisen jälkeen avaa XAMPP Control Panel, ja käynnistä sieltä **Apache** ja **MySQL**-palvelut. Etsi XAMPP-asennuskansiosta kansio nimeltä `htdocs`. Tämä on web-serverin kotikansio: jos sijoitat tähän kansioon HTML- tai PHP-tiedostoja, Apache tarjoilee ne osoitteessa http://localhost. Sijoitamme tehtävän 2 PHP-koodit tänne. 
+Asentamisen jälkeen avaa XAMPP Control Panel, ja käynnistä sieltä **Apache** ja **MySQL**-palvelut.
+
+![xampp](kuvat/xampp.png)
+
+Etsi XAMPP-asennuskansiosta kansio nimeltä `htdocs`. Tämä on web-serverin kotikansio: jos sijoitat tähän kansioon HTML- tai PHP-tiedostoja, Apache tarjoilee ne osoitteessa http://localhost. Sijoitamme tehtävän 2 PHP-koodit tänne. 
 
 Lisäksi XAMPP tarjoaa web-käyttöliittymän MySQL-tietokantaan osoitteessa http://localhost/phpmyadmin. Oletuksena root-käyttäjällä ei ole salasanaa. 
 
@@ -99,7 +104,7 @@ Lisäksi XAMPP tarjoaa web-käyttöliittymän MySQL-tietokantaan osoitteessa htt
 - Luo tähän kantaan taulut nimeltä **tilat**, **varaajat** ja **varaukset**.
 
 ![tietokanta](kuvat/tietokanta.png)
-- Tee tilat-tauluun sarakkeet **id** (INT, AUTO_INCREMENT) ja **tilan_nimi** (VARCHAR) 
+- Lisää tilat-tauluun sarakkeet **id** (INT, AUTO_INCREMENT) ja **tilan_nimi** (VARCHAR) 
 
 ![tilat](kuvat/tilat.png)
 - Varaajat-tauluun **id** (INT, AUTO_INCREMENT) ja **varaajan_nimi** (VARCHAR) 
@@ -120,9 +125,9 @@ Lisäksi XAMPP tarjoaa web-käyttöliittymän MySQL-tietokantaan osoitteessa htt
 
 Luodaan htdocs-kansioon PHP-pohjainen sivusto, jossa tietokannan tauluja voi tarkastella, ja lisätä ja poistaa niihin rivejä. 
 
-PHP-tiedostot toimivat niin, että niissä voi olla normaalia HTML-koodia, mutta sen joukkoon voi sijoittaa PHP-skriptiä kirjoittamalla sen php-tagin sisään: <?php …php-koodia... ?>. Kun selain pyytää PHP-tiedostoa, serveri evaluoi PHP-koodit, ja palauttaa selaimelle HTML:n, jossa on evaluoinnin tulokset. 
+PHP-tiedostot toimivat niin, että niissä voi olla normaalia HTML-koodia, mutta sen joukkoon voi sijoittaa PHP-skriptiä kirjoittamalla sen `php`-tagin sisään: `<?php ...php-koodia... ?>`. Kun selain pyytää PHP-tiedostoa, serveri evaluoi PHP-koodit, ja palauttaa selaimelle HTML:n, jossa on evaluoinnin tulokset. 
 
-Esimerkiksi voimme luoda ruokalistan iteroimalla $menu –muuttujaa, jossa ruoat ovat listamuodossa: 
+Esimerkiksi voimme luoda ruokalistan iteroimalla `$menu` –muuttujaa, jossa ruoat ovat listamuodossa: 
 
 ```php
 <ul> 
@@ -181,9 +186,9 @@ Varsinaisessa projektissa tullaan käyttämään [Django-frameworkkia](https://w
 
 Navigoidaan terminaalilla kansioon, johon projekti halutaan tehdä, ja annetaan komento `python –m venv venv`. Tämä luo suljetun virtuaaliympäristön, johon voidaan asentaa kirjastoja paikallisesti niin, että eri projektien riippuvuudet eivät sotke toisiaan. Virtuaaliympäristö käynnistetään Windowsissa komennolla `venv\Scripts\activate`, minkä jälkeen ympäristöön voi asentaa kirjastoja `pip`-komennolla. 
 
-**SQLite3**-kirjasto tulee Pythonin mukana, mutta asennetaan taulujen esittämistä helpottamaan **Tabulate**-kirjasto komennolla `pip install tabulate`. 
+SQLite on kevyt SQL-tietokantamoottori, joka sisältyy useimpiin uusiin käyttöjärjestelmiin. Tehtävänä on toteuttaa Pythonilla ja SQLitellä sama rakenne kuin edellisessä XAMPP-tehtävässä, eli tilanvaraustietokanta. Lisäksi toteutetaan tekstipohjainen käyttöliittymä, jolla käyttäjä voi tarkastella ja muokata taulujen sisältöä. 
 
-Tehtävänä on toteuttaa Pythonilla ja SQLitellä sama rakenne kuin edellisessä XAMPP-tehtävässä, eli tilanvaraustietokanta. Lisäksi toteutetaan tekstipohjainen käyttöliittymä, jolla käyttäjä voi tarkastella ja muokata taulujen sisältöä. 
+**SQLite3**-kirjasto tulee Pythonin mukana, mutta asennetaan taulujen esittämistä helpottamaan **Tabulate**-kirjasto komennolla `pip install tabulate`. 
 
 Pythonin SQLitellä käytetään tietokantaa tiedostosta `database.db` seuraavasti: 
 ```python
@@ -211,7 +216,7 @@ Komento `sqlite3.connect('database.db')` tarkistaa, onko tuon nimistä tiedostoa
 
 ## Perjantai 
 
-Jatketaan Pythonin parissa: tällä kertaa otetaan haltuun sen HTTP-kirjasto, ja perehdytään, miten MySQL-kantojen kanssa toimitaan. 
+Jatketaan Pythonin parissa: tällä kertaa otetaan käyttöön sen HTTP-kirjasto, ja perehdytään, miten MySQL-kantojen kanssa toimitaan. 
 
 ### Tehtävä: HTTP-backend MySQL-tietokannalle 
 
