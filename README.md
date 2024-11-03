@@ -222,6 +222,46 @@ Jatketaan Pythonin parissa: tällä kertaa otetaan käyttöön sen HTTP-kirjasto
 
 Tehdään XAMPP-tehtävän MySQL-kantaa käyttävä web-käyttöliittymä, joka pyörii Pythonilla toteutetun web-serverin päällä. Käytämme HTTP-palvelimen luomiseen Pythonin standardikirjastoon kuuluvaa HTTP-kirjastoa. MySQL:ää varten täytyy asentaa ajuri: `pip install mysql-connector-python`. 
 
+Yksinkertainen HTML:ää tarjoileva palvelin rakentuu esim. näin:
+
+```python
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+class myHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/html')
+        self.end_headers()
+        self.wfile.write(b'<h1>Hello world</h1>')
+
+server = HTTPServer(('localhost', 8000), myHandler)
+server.serve_forever()
+```
+
+...ja paikalliseen MySQL-palvelimeen otetaan yhteys tähän tapaan:
+
+```python
+import mysql.connector
+
+db_host = "localhost"
+db_user = "varaus-admin"
+db = "tilavaraus"
+db_password = "varaus-admin"
+
+mydb = mysql.connector.connect(
+    host = db_host,
+    user = db_user,
+    password = db_password,
+    database = db
+)
+
+mycursor = mydb.cursor()
+mycursor.execute("SELECT * FROM varaajat;")
+result = mycursor.fetchall()
+mycursor.close()
+print(result)
+```
+
 Luo ensin näkymät taulujen sisällön tarkastelua varten. Jos ehdit, toteuta myös rivien lisääminen ja poistaminen. Voit rakentaa HTML-näkymät käsin, tai halutessasi voit käyttää jotain template-kirjastoa kuten [Jinja](https://jinja.palletsprojects.com/en/stable/). 
 
 Resurssit: 
