@@ -1,4 +1,4 @@
-### [Viikko 45 ->](./README.md)
+### [Viikko 45 ->](./viikko-45.md)
 # Viikko 44
 ## Maanantai 
 Kyselyn perusteella kurssilaisilla on perus-web-teknologiat aika hyvin hallussa, mutta aloitetaan kuitenkin perusteista, ja tehdään vähän sormiharjoituksia, niin saadaan verryteltyä koodauslihaksia.
