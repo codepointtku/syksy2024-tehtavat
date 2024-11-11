@@ -365,7 +365,7 @@ MUI:ta käytetään niin, että HTML-elementtien sijaan (tai niiden ohessa) käy
 
 ### FE-tehtävä
 
-Perehdy Material UI:n tarjontaan sen [sivustolla(https://mui.com/material-ui/all-components/)]. Perehdy erityisesti tässä vaiheessa [tekstikenttään](https://mui.com/material-ui/react-text-field/), [painikkeeseen](https://mui.com/material-ui/react-button/) [tauluun](https://mui.com/material-ui/react-table/), [containeriin](https://mui.com/material-ui/react-container/) sekä [yläpalkkiin](https://mui.com/material-ui/react-app-bar/).
+Perehdy Material UI:n tarjontaan sen [sivustolla](https://mui.com/material-ui/all-components/). Perehdy erityisesti tässä vaiheessa [tekstikenttään](https://mui.com/material-ui/react-text-field/), [painikkeeseen](https://mui.com/material-ui/react-button/), [tauluun](https://mui.com/material-ui/react-table/), [containeriin](https://mui.com/material-ui/react-container/) sekä [yläpalkkiin](https://mui.com/material-ui/react-app-bar/).
 
 Otetaan työn alle tuttu tilavaraussovellus. Voit aloittaa kokonaan uuden projektin MUI-muotoiluilla, mutta MUI:n asentaminen olemassaolevaan projektiin voi olla havainnollisempaa. Voit säilyttää sovelluksen logiikan samanlaisena kuin se nyt on, ja vain korvata JSX:ssä olevia HTML-elementtejä vastaavilla MUI-komponenteilla, ja katsoa miltä ne näyttävät ja miten ne toimivat osana sovellusta.
 
@@ -378,8 +378,6 @@ Tehtävänä on päivittää tilavaraussovellus käyttämään MUI:ta: sijoita n
 - https://www.youtube.com/watch?v=0KEpWHtG10M&list=PL4cUxeGkcC9gjxLvV4VEkZ6H6H4yWuS58
 
 ### Backend
-Paginointi, filtteröinti
-Nested Serializers for related objects, PrimaryKeyRelatedField, HyperlinkedRelatedField, and SlugRelatedField
 Lähes aina meillä täytyy olla valmius jollain tavoin rajoittaa endpointista tarjoiltavan datan määrää. Useimmissa järjestelmissä tietokantoihin kertyy tuhansia tai jopa miljoonia rivejä, ja niiden kaikkien tarjoaminen frontille kerralla ei ole mielekästä. Tyypillisimmät tavat rajoittaa haettavaa dataa ovat [sivutus](https://www.django-rest-framework.org/api-guide/pagination/) (pagination) ja [suodatus](https://www.django-rest-framework.org/api-guide/filtering/) (filtering).
 
 **Sivutuksessa** määritellään tietty maksimimäärä rivejä, joita haetaan kerrallaan. API:n käyttäjä asettaa url-parametrit, jotka kertovat joko haettavan [sivunumeron](https://www.django-rest-framework.org/api-guide/pagination/#pagenumberpagination), tai haettavien rivien määrän ja haun alkupisteen [(limit ja offset)](https://www.django-rest-framework.org/api-guide/pagination/#limitoffsetpagination). Kolmas DRF:n oletuksena tarjoama sivutusmetodi on [kursorisivutus](https://www.django-rest-framework.org/api-guide/pagination/#cursorpagination), jossa on mahdollista navigoida vain eteen- ja taaksepäin, mutta ei siirtyä satunnaiselle sivulle listassa. Kursorisivutuksen hyöty on, että se toimii suorituskykyisesti myös erittäin suurissa tauluissa, joissa muunlaiset sivutukset voivat tukehtua.
@@ -412,7 +410,7 @@ REST_FRAMEWORK = {
 }
 ```
 
-Django-filter-kirjaston tarjoamaa geneeristä suodatusta käytetään luomalla tietomallin pohjalta FilterSet:
+`Django-filter`-kirjaston tarjoamaa geneeristä suodatusta käytetään luomalla tietomallin pohjalta `FilterSet`:
 ```Python
 import django_filters
 from .models import Varaus
@@ -451,6 +449,7 @@ Toteuta tilavaraussovelluksen tauluihin suodatukset kaikkien kenttien pohjalta s
 ### BE-resursseja
 - https://www.django-rest-framework.org/api-guide/pagination/
 - https://www.django-rest-framework.org/api-guide/filtering/
+- https://docs.djangoproject.com/en/5.1/ref/models/querysets/#id4
 - https://django-filter.readthedocs.io/en/stable/guide/rest_framework.html
 
 ## Perjantai 
