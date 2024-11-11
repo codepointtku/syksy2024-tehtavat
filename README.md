@@ -347,9 +347,111 @@ Perehdy Djangon signaaleihin, ja toteuta sovellukseen toiminnallisuus, jossa ep�
 - https://www.sitepoint.com/understanding-signals-in-django/
 - https://medium.com/jungletronics/how-django-signals-work-81dc30d0dad5
 
-## Torstai
-Tulossa...
+## Torstai 
+### Frontend
 
-## Perjantai
-Tulossa...
+Kaikkien React-komponenttien tekeminen itse HTML:stä on täysin mahdollista, mutta HTML:n oletusmuotoilut ovat aika karuja, ja yhtenäisen visuaalisen ilmeen tyylittely kokonaiselle sovellukselle on iso urakka. Järkevä vaihtoehto itse tekemiselle on käyttää jotain valmista UI-kirjastoa. Perehdymme tässä [Material UI (MUI)-kirjastoon](https://mui.com/material-ui/getting-started/), joka on avoimen lähdekoodin implementaatio Googlen samannimisestä visuaalisesta ohjeistosta. 
 
+MUI asennetaan komennolla `npm install @mui/material @emotion/react @emotion/styled`, joka asentaa MUI:n sekä sen tyylittelyyn käytettävän Emotion-moottorin. Lisäksi on suositeltavaa asentaa kirjaston käyttämä Roboto-fontti: `npm install @fontsource/roboto`, joka pitää lisäksi ottaa käyttöön lisäämällä seuraavat rivit React-projektin juuritiedostoon (`main.jsx`):
+```JS
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+```
+Voit myös asentaa Material Icons -ikonisetin komennolla `npm install @mui/icons-material`. Voit tarkastella settiin kuuluvia ikoneita osoitteessa https://mui.com/material-ui/material-icons/. 
+
+MUI:ta käytetään niin, että HTML-elementtien sijaan (tai niiden ohessa) käytetään MUI:n valmiiksi muotoiltuja komponentteja. Useimmille sisältötageille löytyy MUI:sta toimiva vastine, ja niiden lisäksi kirjasto sisältää monenlaisia valmiita palikoita eri tarkoituksiin, kuten navigaatiopalkkeja, sivusta aukeavia menuja, notifikaatioita ja paljon muuta.
+
+### FE-tehtävä
+
+Perehdy Material UI:n tarjontaan sen [sivustolla(https://mui.com/material-ui/all-components/)]. Perehdy erityisesti tässä vaiheessa [tekstikenttään](https://mui.com/material-ui/react-text-field/), [painikkeeseen](https://mui.com/material-ui/react-button/) [tauluun](https://mui.com/material-ui/react-table/), [containeriin](https://mui.com/material-ui/react-container/) sekä [yläpalkkiin](https://mui.com/material-ui/react-app-bar/).
+
+Otetaan työn alle tuttu tilavaraussovellus. Voit aloittaa kokonaan uuden projektin MUI-muotoiluilla, mutta MUI:n asentaminen olemassaolevaan projektiin voi olla havainnollisempaa. Voit säilyttää sovelluksen logiikan samanlaisena kuin se nyt on, ja vain korvata JSX:ssä olevia HTML-elementtejä vastaavilla MUI-komponenteilla, ja katsoa miltä ne näyttävät ja miten ne toimivat osana sovellusta.
+
+Tehtävänä on päivittää tilavaraussovellus käyttämään MUI:ta: sijoita navigaatio yläpalkkiin, ja korvaa eri näkymissä olevat taulut ja lomakkeet MUI:n komponenteilla.
+
+### FE-resursseja
+- https://mui.com/material-ui/getting-started/
+- https://mui.com/material-ui/all-components/
+- https://mui.com/material-ui/material-icons/
+- https://www.youtube.com/watch?v=0KEpWHtG10M&list=PL4cUxeGkcC9gjxLvV4VEkZ6H6H4yWuS58
+
+### Backend
+Paginointi, filtteröinti
+Nested Serializers for related objects, PrimaryKeyRelatedField, HyperlinkedRelatedField, and SlugRelatedField
+Lähes aina meillä täytyy olla valmius jollain tavoin rajoittaa endpointista tarjoiltavan datan määrää. Useimmissa järjestelmissä tietokantoihin kertyy tuhansia tai jopa miljoonia rivejä, ja niiden kaikkien tarjoaminen frontille kerralla ei ole mielekästä. Tyypillisimmät tavat rajoittaa haettavaa dataa ovat [sivutus](https://www.django-rest-framework.org/api-guide/pagination/) (pagination) ja [suodatus](https://www.django-rest-framework.org/api-guide/filtering/) (filtering).
+
+**Sivutuksessa** määritellään tietty maksimimäärä rivejä, joita haetaan kerrallaan. API:n käyttäjä asettaa url-parametrit, jotka kertovat joko haettavan [sivunumeron](https://www.django-rest-framework.org/api-guide/pagination/#pagenumberpagination), tai haettavien rivien määrän ja haun alkupisteen [(limit ja offset)](https://www.django-rest-framework.org/api-guide/pagination/#limitoffsetpagination). Kolmas DRF:n oletuksena tarjoama sivutusmetodi on [kursorisivutus](https://www.django-rest-framework.org/api-guide/pagination/#cursorpagination), jossa on mahdollista navigoida vain eteen- ja taaksepäin, mutta ei siirtyä satunnaiselle sivulle listassa. Kursorisivutuksen hyöty on, että se toimii suorituskykyisesti myös erittäin suurissa tauluissa, joissa muunlaiset sivutukset voivat tukehtua.
+
+**Suodatuksessa** määritetään parametri tai parametreja, joiden perusteella osa riveistä jätetään näyttämättä. Esimerkiksi voimme rajoittaa tilavarauspalvelun tilanäkymää niin, että se näyttää vain tilat, joiden nimessä on merkkijono "A1", tai varausnäkymää niin, että siinä näytetään vain varaukset, jotka kohdistuvat joulukuuhun, ja jotka on tehnyt Erkki Merkkinen.
+
+Yksinkertaisia suodatuksia voi DRF:ssä tehdä yliajamalla `GenericAPIView`:n `get_queryset()`-metodia niin, että rajoittaa hakua esimerkiksi HTTP-kutsussa annetun parametrin perusteella käyttämällä Djangon Queryset-APIn [kenttähakuja](https://docs.djangoproject.com/en/5.1/ref/models/querysets/#id4) (field lookups) esimerkiksi näin:
+
+```Python
+from myapp.models import Purchase
+from myapp.serializers import PurchaseSerializer
+from rest_framework import generics
+
+class TilaList(generics.ListAPIView):
+    serializer_class = TilaSerializer
+
+    def get_queryset(self):
+        queryset = Tila.objects.all()
+        varaaja = self.request.query_params.get('varaaja')
+        if varaaja is not None:
+            queryset = queryset.filter(tila__varaaja=varaaja)
+        return queryset
+```
+
+Jos tarvitaan monimutkaisempia suodatuksia, voi olla järkevää asentaa `django-filter`-kirjasto, joka yksinkertaistaa ja standardoi DRM:n suodatuksia. Kirjasto asennetaan komennolla `pip install django-filter`, ja konfiguroidaan käyttöön `settings.py`:ssä seuraavasti:
+
+```Python
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+}
+```
+
+Django-filter-kirjaston tarjoamaa geneeristä suodatusta käytetään luomalla tietomallin pohjalta FilterSet:
+```Python
+import django_filters
+from .models import Varaus
+
+class VarausFilter(django_filters.FilterSet):
+    varaaja = django_filters.CharFilter(lookup_expr='icontains')
+    tila = django_filters.CharFilter(lookup_expr='icontains')
+    varauspaiva = django_filters.DateFromToRangeFilter()
+
+    class Meta:
+        model = Varaus
+        fields = ['varaaja', 'varaus', 'varauspaiva']
+```
+
+Tässä määritellään, että `varaaja`- ja `tila`-kenttiä voidaan suodattaa osittaisella merkkijonolla, jonka kirjainkokoa ei huomioida. `Varauspaiva`-kenttää voidaan suodattaa antamalla alku- ja/tai loppupäivämäärä.
+
+Suodatin otetaan käyttöön näkymässä seuraavasti:
+```Python
+from rest_framework.generics import ListAPIView
+from .models import Varaus
+from .serializers import VarausSerializer
+from .filters import VarausFilter
+
+class VarausListView(ListAPIView):
+    queryset = Varaus.objects.all()
+    serializer_class = VarausSerializer
+    filterset_class = VarausFilter
+```
+
+Tätä näkymää voidaan suodattaa url-parametreilla, esim. `?varaaja=kalle&varauspaiva_after=2024-12-10`.
+
+### BE-tehtävä
+
+Toteuta tilavaraussovelluksen tauluihin suodatukset kaikkien kenttien pohjalta sekä sivutus niin, että yhdelle sivulle mahtuu 10 riviä. Lisää tarvittaessa kantaan rivejä, jotta voit testata suodatusta ja sivutusta.
+
+### BE-resursseja
+- https://www.django-rest-framework.org/api-guide/pagination/
+- https://www.django-rest-framework.org/api-guide/filtering/
+- https://django-filter.readthedocs.io/en/stable/guide/rest_framework.html
+
+## Perjantai 
+Tulossa...
