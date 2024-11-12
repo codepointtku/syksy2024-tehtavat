@@ -452,5 +452,190 @@ Toteuta tilavaraussovelluksen tauluihin suodatukset kaikkien kenttien pohjalta s
 - https://docs.djangoproject.com/en/5.1/ref/models/querysets/#id4
 - https://django-filter.readthedocs.io/en/stable/guide/rest_framework.html
 
-## Perjantai 
-Tulossa...
+## Perjantai
+### Frontend 
+
+MUI:n komponenttien ulkoasua määrittää **teema**, joka sisältää mm. fonttiasetukset, tekstikoot eri tilanteissa, väripaletin, pudotusvarjojen asetukset jne. Teema syötetään sovellukseen käyttämällä `ThemeProvider`-komponenttia, joka käyttää pellin alla Reactin **kontekstia.** Teeman avulla sovelluksen komponentit noudattelevat yhtenäistä visuaalista linjaa. 
+
+Teemaa on mahdollista muokata niin, että se vastaa esimerkiksi yrityksen graafista ohjeistoa. Yksi keino tähän on muokata [teemamuuttujia](https://mui.com/material-ui/customization/theming/#theme-configuration-variables) luomalla teemaobjekti `createTheme()`-metodilla, antamalla sille parametrina muutokset oletusteemaan verrattuna, ja tarjoilemalla teema `ThemeProviderilla` esim. seuraavasti:
+
+```JS
+import * as React from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { lime, purple } from '@mui/material/colors';
+import Button from '@mui/material/Button';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#FF5733',
+      // light: lasketaan palette.primary.main:in perusteella,
+      // dark: lasketaan palette.primary.main:in perusteella,
+      // contrastText: lasketaan niin, että se erottuu hyvin palette.primary.main:iä vasten
+    },
+    secondary: {
+      main: '#E0C2FF',
+      light: '#F5EBFF',
+      // dark: lasketaan palette.secondary.main:in perusteella,
+      contrastText: '#47008F',
+    },
+  },
+});
+
+export default function UsingColorObject() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Button variant="contained">Primary</Button>
+      <Button variant="contained" color="secondary" sx={{ ml: 2 }}>
+        Secondary
+      </Button>
+    </ThemeProvider>
+  );
+}
+```
+Tässä muokataan teeman primaarivärin `main`-tokenia (kirkkaan ja pimeän teeman variantit sekä sopiva tekstiväri generoidaan automaattisesti), sekä sekundaarivärin `main`-, `light`- ja `contrastText`-tokeneita (pimeän teeman variantti generoidaan automaattisesti). `ThemeProvider`:in sisällä olevat MUI-komponentit käyttävät sitten näitä värejä.
+
+Jos luot omia custom-komponentteja, voit tehdä ne seuraamaan voimassaolevaa MUI-teemaa käyttämällä `styled()`-wrapperia MUI-sivuston [ohjeiden](https://mui.com/material-ui/customization/creating-themed-components/) mukaan. Ratkaisu vaatii vähän boilerplate-koodia; alla esimerkki komponentista, joka koostuu `h2`-headerista ja `p`-tekstikappaleesta `div`-elementin sisällä:
+
+```JS
+import React from 'react';
+import { styled } from '@mui/material/styles';
+
+const CardWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(3),
+  backgroundColor: theme.palette.background.paper,
+
+  '& .card-title': {
+    color: theme.palette.primary.main,
+    marginBottom: theme.spacing(2),
+    fontSize: theme.typography.h5.fontSize,
+  },
+
+  '& .card-description': {
+    color: theme.palette.text.secondary,
+    marginBottom: theme.spacing(2),
+    fontSize: theme.typography.body1.fontSize,
+  },
+}));
+
+function CustomCard({ title, description }) {
+  return (
+    <CardWrapper>
+      <h2 className="card-title">{title}</h2>
+      <p className="card-description">{description}</p>
+    </CardWrapper>
+  );
+}
+
+export default CustomCard;
+```
+
+Esimerkissä luodaan `CustomCard`-komponentti, jonka otsake ja tekstikappale ottaavat tekstivärin, marginaalin ja fonttikoon teeman määrittelyistä. `Div`-elementti, jonka sisällä ne ovat, ottaa teemasta padding-määritykset sekä taustavärin. Jos tätä komponenttia käytetään eri teemojen sisällä, se mukautuu yleiseen ilmeeseen.
+
+### FE-tehtävä
+Suunnittele tilavaraussovellukselle uusi väripaletti ja valitse sille uusi fontti, ja tee niiden pohjalta sovellukselle uusi teema. Luo myös uusi taulukko- tai listakomponentti, jota käytät MUI-Tablen sijasta eri taulujen tietojen esittämiseen, ja toteuta se niin, että se käyttää MUI-teeman värejä ja fontteja.
+
+### FE-Resursseja
+- https://mui.com/material-ui/customization/theming/
+- https://mui.com/material-ui/customization/creating-themed-components/
+- https://www.dhiwise.com/post/exploring-mui-theming-options-customization-made-easy
+
+
+### Backend
+
+DRF muodostaa automaattisesti **selailtavan API:n,** jossa käyttäjä voi testailla endpointteja eri parametreilla. Tästä on hyötyä API:n kehityksessä ja testauksessa, ja myös FE-kehityksessä, kun FE-tiimi voi sen kautta helposti tarkistaa mitä parametreja ja tietotyyppejä endpointit ottavat vastaan.  
+
+DRF:n selailtava API voi olla riittävä työkalu, mutta on olemassa myös API-standardi nimeltä [OpenAPI](https://swagger.io/resources/open-api/). OpenAPI on standardi, jonka perusteella REST API:lle voidaan tuottaa kieliagnostinen määrittely. Tätä määrittelyä voidaan käyttää viestittämään API:n ominaisuuksia eri toimijoiden kesken, ja myös automatisoida jotain sovelluskehityksen vaiheita, kuten juurikin luoda selailtavan API:n työkalulla kuten [Swagger](https://swagger.io/tools/open-source/). 
+
+OpenAPIlla ja Swaggerilla saa siis tehtyä saman asian, mitä DRF tarjoaa sisäänrakennettuna, mutta niiden erona on se, että DRF:n oma selailtava API on DRF-spesifinen ratkaisu siinä missä OpenAPI on avoin standardi. Projektista riippuen tämä voi olla OpenAPI:n käyttöönoton vaatiman työn arvoista. 
+
+DRF:lle on olemassa useita työkaluja, joilla sen API:sta saa automaattisesti generoitua OpenAPI-yhteensopivan dokumentaation ja Swagger-käyttöliittymän. Käytämme tässä `drf-yasg` –kirjastoa. 
+
+`Drf-yasg` otetaan käyttöön komennolla `pip install drf-yasg`. Se konfiguroidaan `settings.py`:ssä seuraavasti:  
+
+```Python
+INSTALLED_APPS = [ 
+   ... 
+   'django.contrib.staticfiles',  
+   'drf_yasg', 
+   ... 
+] 
+```
+
+Ja `urls.py`:ssä seuraavasti: 
+
+```Python
+from django.urls import re_path 
+from rest_framework import permissions 
+from drf_yasg.views import get_schema_view 
+from drf_yasg import openapi 
+
+schema_view = get_schema_view( 
+   openapi.Info( 
+      title="Tilavaraus API", 
+      default_version='v1', 
+      description="APIn kuvaus", 
+      terms_of_service="https://www.google.com/policies/terms/", 
+      contact=openapi.Contact(email="contact@tilavaraus.local"), 
+      license=openapi.License(name="BSD License"), 
+   ), 
+   public=True, 
+   permission_classes=(permissions.AllowAny,), 
+)
+
+urlpatterns = [ 
+   path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'), 
+   path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'), 
+] 
+```
+
+Tämä tarjoilee 3 polkua, joista API:n määrittelyjä voidaan tarkastella: 
+
+- JSON -näkymä osoitteessa `/swagger.json `
+- YAML -näkymä osoitteessa `/swagger.yaml` 
+- swagger-ui -näkymä osoitteessa `/swagger/` 
+
+OpenAPI käyttää määrittelyjen esittämiseen JSONin lisäksi [YAML](https://yaml.org/):ia. YAML on ihmisluettava datan serialisointiformaatti samaan tapaan kuin JSON, mutta se on JSONia helppolukuisempi, ja tavallaan JSONia ilman ylimääräisiä hipsuja ja sulkeita. YAMLia käytetään JSONin vaihtoehtona erilaisten konfiguraatio- ja määrittelytiedostojen kirjoittamiseen. Esimerkiksi seuraava JSON: 
+
+```JSON
+{ 
+  "id": 0, 
+  "nimi": "Kalle", 
+  "ajokortti": true, 
+  "osaaminen": [ 
+    { 
+      "kieli": "Python", 
+      "taso": 3 
+    }, 
+    { 
+      "kieli": "JavaScript", 
+      "taso": 4 
+    } 
+  ] 
+} 
+```
+Kääntyy YAML:ksi seuraavasti: 
+
+```YAML
+--- 
+id: 0 
+nimi: Kalle 
+ajokortti: true 
+osaaminen: 
+- kieli: Python 
+  taso: 3 
+- kieli: JavaScript 
+  taso: 4 
+```
+
+Kuten huomaat, YAML käyttää merkittävästi vähemmän välimerkkejä, ja esittää hierarkiaa ja rakennetta sisennyksillä sulkeiden sijaan, samaan tapaan kuin Python. 
+
+### BE-tehtävä 
+
+Ota `drf-yasg` käyttöön projektissa, ja tarkastele sen generoimia Swagger-näkymiä. 
+
+### BE-Resursseja: 
+- https://swagger.io/specification/
+- https://drf-yasg.readthedocs.io/en/stable/
+- https://yaml.org/
+- https://www.bairesdev.com/tools/json2yaml/
